@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-app
+  template:
+    metadata:
+      labels:
+        app: django-app
+    spec:
+      containers:
+        - name: django-container
+          image: maellefotso/mon-image-django:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              value: "sqlite:////DJANGO-BLOG-MASTER/blogproj/db.sqlite3"
+          volumeMounts:
+            - mountPath: "/DJANGO-BLOG-MASTER/blogproj"
+              name: sqlite-storage
+            - mountPath: "/DJANGO-BLOG-MASTER/blogproj/staticfiles/blog"
+              name: staticfiles
+      volumes:
+        - name: sqlite-storage
+          persistentVolumeClaim:
+            claimName: sqlite-pvc
+        - name: staticfiles
+          persistentVolumeClaim:
+            claimName: staticfiles-pvc

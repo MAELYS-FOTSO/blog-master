@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: django-app
+spec:
+  containers:
+    - name: django
+      image: maellefotso/mon-image-django:latest  # Remplace par le nom de ton image Docker
+      ports:
+        - containerPort: 8000
+      volumeMounts:
+        - mountPath: "/blogproj/data"
+          name: sqlite-storage
+  volumes:
+    - name: sqlite-storage
+      persistentVolumeClaim:
+        claimName: sqlite-pvc
